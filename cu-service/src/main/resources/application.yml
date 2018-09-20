@@ -1,0 +1,57 @@
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:9999/eureka/
+spring:
+  application:
+    name: cu-service
+  profiles:
+      active: ${SPRING_PROFILES_ACTIVE:dev}
+  datasource:
+       username: ulegal
+       password: Ulegal888
+       driver-class-name: com.mysql.jdbc.Driver
+       url: jdbc:mysql://localhost:3306/cloudoauth?useUnicode=true&characterEncoding=utf8&autoReconnect=true&failOverReadOnly=false&useSSL=false
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  redis:
+    host: localhost
+    port: 6379
+server:
+  port: 8765
+
+
+oauth2:
+  server-host: http://localhost:9998
+
+security:
+  oauth2:
+#    client:
+#      access-token-uri: http://localhost:${server.port}/uaa/oauth/token
+#      user-authorization-uri: http://localhost:${server.port}/uaa/oauth/authorize
+#      client-id: webapp
+    resource:
+      id: cu-service
+      user-info-uri: ${oauth2.server-host}/user
+      prefer-token-info: false
+#      token-info-uri: ${oauth2.server-host}/oauth/check_token/
+#      clientId: android
+#      clientSecret: android
+
+
+ulegal:
+  oauth2:
+    client:
+      id: ${security.oauth2.resource.id}
+      accessTokenUrl: ${oauth2.server-host}/oauth/token
+#      clientId: ${security.oauth2.resource.client-id}
+#      clientSecret: ${security.oauth2.resource.client-secret}
+      clientId: ${security.oauth2.resource.client-id:webapp}
+      clientSecret: ${security.oauth2.resource.client-secret:webapp}
+      clientAuthenticationScheme: header
+
+feign:
+  okhttp:
+    enabled: true
